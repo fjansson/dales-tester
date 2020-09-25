@@ -24,11 +24,8 @@ Use
 
 cd cases/rico
 
-# edit rico.job, change work paths and the TAG variable, according to
-# which DALES version to run
-
 # submit an array job for each ensemble
-sbatch --array=1-5 rico.job
+sbatch --array=1-5 --export=TAG=4.3-rc.1 rico.job 
 
 # when finished, use `dales-ensemble-plot.py` to analyze the results
 ```

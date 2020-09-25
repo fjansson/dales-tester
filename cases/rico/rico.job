@@ -55,5 +55,8 @@ echo SYST $SYST
 echo DALES $DALES
 echo CASE $CASE
 echo WORK $WORK
+echo hostname `hostname`
 
-time srun $DALES $NAMOPTIONS
+# /usr/bin/time -f"%e" 
+srun $DALES $NAMOPTIONS | tee output.txt
+

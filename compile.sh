@@ -23,6 +23,7 @@ export NETCDF_LIB=/sw/arch/RedHatEnterpriseServer7/EB_production/2019/software/n
 
 
 cd dales
+git fetch
 git checkout $TAG
 cd ..
 mkdir build-$TAG-$SYST
