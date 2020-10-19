@@ -10,13 +10,19 @@
 # #SBATCH --constraint=haswell # Runs only on Haswell nodes (faster, AVX2)
 
 
-# submit as array job   sbatch --array=1-5 rico.job
+# submit as array job  sbatch --array=1-5 --export=TAG=4.3-rc.1 rico-fftw.job
 # $SLURM_ARRAY_TASK_ID gives ID, which is used as random seed.
 ID=$SLURM_ARRAY_TASK_ID
 
-TAG=4.3-rc.1
+#TAG=4.3-rc.1
 #TAG=4.2.1
 #TAG=4.1
+if [ -z "$TAG" ] 
+then
+    echo "Set variable $TAG to the DALES version to run."
+    exit
+fi
+
 
 SYST=gnu-fast
 
@@ -51,5 +57,6 @@ echo SYST $SYST
 echo DALES $DALES
 echo CASE $CASE
 echo WORK $WORK
+echo hostname `hostname`
 
-time srun $DALES $NAMOPTIONS
+srun $DALES $NAMOPTIONS | tee output.txt
