@@ -1,0 +1,124 @@
+&RUN
+iexpnr     =  159
+runtime    =  52200. 
+trestart   =  3600
+dtmax      =  10.
+ladaptive  = .true.
+irandom    =  43
+randthl    =  0.1
+randqt     =  2.5e-5
+nsv        =  2
+nprocx     = 1
+nprocy     = 8
+/
+
+&DOMAIN
+itot       =  384
+jtot       =  384
+kmax       =  196
+
+xsize      =  96000.
+ysize      =  96000.
+
+xlat       =  65.
+xlon       =  -10.
+xday       =  31.
+xtime      =  0.
+/
+
+&PHYSICS
+z0         =  6.6e-4
+ps         =  100900.
+thls       = 275.495697
+lmoist     =  .true.
+irad       =  3
+timerad    =  60.
+lcoriol    =  .true.
+ltimedep   =  .true.
+useMcICA   = .false.
+/
+
+&NAMSURFACE
+isurf      = 2
+z0mav      = 6.6e-4
+z0hav      = 3.7e-6
+ps         = 100900.
+ustin      = 0.3
+albedoav   = 0.07
+/
+
+&NAMSUBGRID
+Prandtl    = 1.
+/
+
+&NAMMICROPHYSICS
+imicro          =  2
+l_sb            =  .true.
+l_rain          =  .true.
+l_sedc          =  .true.
+l_mur_cst       =  .false.
+mur_cst         =  0
+Nc_0            = 50e6
+sig_g           = 1.2
+/
+&NAMBULKMICROSTAT
+lmicrostat      =  .true.
+dtav            =  60
+timeav          =  600
+/
+
+&DYNAMICS
+llsadv     =  .false.
+lqlnr      =  .false.
+cu         =  2
+cv         =  -18
+
+iadv_mom    =  2
+iadv_tke    =  55
+iadv_thl    =  55
+iadv_qt     =  55
+iadv_sv     =  55 55
+/
+&NAMCHECKSIM
+tcheck      = 60
+/
+&NAMTIMESTAT
+ltimestat   = .true.
+dtav        = 60 
+/
+&NAMGENSTAT
+lstat       = .true.
+dtav        = 60
+timeav      = 600
+/
+&NAMSTATTEND
+dtav        = 60
+timeav      = 600
+ltend       = .true.
+/
+&SUBGRID
+ldelta      = .true.
+/
+&NAMBUDGET
+lbudget     = .true.
+dtav        = 60.
+timeav      = 600. 
+/
+&NAMRADSTAT
+dtav        = 60
+timeav      = 600.
+lstat       = .true.
+/
+
+&NAMNETCDFSTATS
+lnetcdf = .true.
+/
+
+&NAMFIELDDUMP
+ DTAV        =   1800.0
+ LFIELDDUMP  = .true.
+ LDIRACC     = .false.
+ LBINARY     = .false.
+ KLOW        =   1
+ KHIGH       =   167
+/

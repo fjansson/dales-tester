@@ -1,0 +1,16 @@
+Run 159 was used as a reference case run in De Roode et al. Turbulent transport in the gray zone: A large eddy model intercomparison study of the CONSTRAIN cold air outbreak case. Journal of Advances in Modeling Earth Systems, 2019, 11.3: 597-623. This paper also includes some preliminary results with the Seifert-Beheng ice microphysics scheme obtained by Jan Chylik (U Koeln)
+
+The Dales results are characterized by a much longer lifetime of solid stratocumulus as compared to the oher models. Also it tends to produce only little precipitation as compared to the other model results.
+
+namoptions.159 applies 
+  Fu-Liou radiation (irad = 3, sets iradiation=1=irad_full, calls radfull) 
+  Seifert-Beheng microphysics (imicro = 2 = imicro_bulk, calls bulkmicro, with l_sb = true)
+
+
+Useful tests comprise
+ - sensitivity to droplet number concentrations , in paper Nc = 10, 30, 50, 100 cm^-3
+ - Khairoutdinov Kogan microphysics scheme (l_sb = false)
+ - RRTMG radiation (use input file backrad.inp.nc.rrtmg, and in namoptions set irad=-1 and iradiation = 4 = irad_rrtmg) 
+
+
+
