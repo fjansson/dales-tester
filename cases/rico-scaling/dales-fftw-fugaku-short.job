@@ -1,0 +1,86 @@
+#!/bin/sh
+#PJM -L "node=1"
+#PJM -L "rscunit=rscunit_ft01"
+#PJM -L "rscgrp=eap-small"
+#PJM -L "elapse=0:05:00"
+#PJM --mpi max-proc-per-node=48
+#PJM -s
+
+# do not create empty stdout/stderr files
+export PLE_MPI_STD_EMPTYFILE=off
+
+. /vol0001/apps/oss/spack/share/spack/setup-env.sh
+spack load netcdf-fortran%fj
+spack load fftw@3.3.8%fj /4jakmbv
+
+
+# submit as bulk job for ensemble, to set different random seeds
+# pjsub --bulk --sparam startbulkno-endbulkno -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fftw-fugaku.sh
+
+# pjsub -x "TAG=c8cf1,NX=6,NY=8"  -L "node=1"  dales-fftw-fugaku.sh
+
+
+# bulk job ID, used as random seed
+ID=${PJM_BULKNUM}
+
+if [ -z "$ID" ] 
+then
+    ID=1
+fi
+
+
+if [ -z "$TAG" ] 
+then
+    echo "Set variable TAG to the DALES version to run."
+    exit
+fi
+
+if [ -z "$NX" ] 
+then
+    echo "Set variable NX to the number of tasks in x."
+    exit
+fi
+
+if [ -z "$NY" ] 
+then
+    echo "Set variable NY to the number of tasks in y."
+    exit
+fi
+
+NTOT=$(($NX*NY))
+
+OPT=fftw
+SYST=FX-Fujitsu
+NAMOPTIONS=namoptions-1728-fftw.001
+
+DALES=`pwd`/../../build-$TAG-$SYST/src/dales4
+
+
+CASE=`pwd`
+WORK=$HOME/dales-tester-wrk/rico-$TAG-$SYST-$OPT-$NX-$NY/$ID
+
+mkdir -p $WORK
+
+cd $WORK
+cp $CASE/{lscale.inp.001,$NAMOPTIONS,prof.inp.001,scalar.inp.001} ./
+
+# edit random seed in namoptions
+sed -i -r "s/irandom.*=.*/irandom = $ID/" $NAMOPTIONS
+
+# edit nprocx, nprocy in namelist
+sed -i -r "s/nprocx.*=.*/nprocx = $NX/;s/nprocy.*=.*/nprocy = $NY/" $NAMOPTIONS
+
+echo ID $ID
+echo SYST $SYST
+echo DALES $DALES
+echo CASE $CASE
+echo WORK $WORK
+echo hostname `hostname`
+#echo SLURM_NTASKS $SLURM_NTASKS
+echo NTOT $NTOT
+echo NX,NY $NX,$NY
+
+mpiexec -n $NTOT $DALES $NAMOPTIONS | tee output.txt
+
+
+
