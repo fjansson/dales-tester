@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH -t 6:00:00
 #SBATCH --constraint=haswell # Runs only on Haswell nodes (faster, AVX2)
+#SBATCH --contiguous         # request adjacent nodes, hope for more consistent network 
 # note number of nodes to be specified when submitting
 
 
@@ -11,7 +12,7 @@
 # #SBATCH --ntasks-per-node=16
 # #SBATCH --constraint=ivy # Runs only on Ivy Bridge nodes
 # #SBATCH --constraint=haswell # Runs only on Haswell nodes (faster, AVX2)
-# #SBATCH --contiguous         # request adjacent nodes, hope for more consistent network 
+# 
 
 module load 2019
 module load netCDF-Fortran/4.4.4-foss-2018b
@@ -51,7 +52,7 @@ NTOT=$(($NX*NY))
 
 OPT=fftw
 SYST=gnu-fast
-NAMOPTIONS=namoptions-1728-fftw.001
+NAMOPTIONS=namoptions-1728-$OPT.001
 
 DALES=`pwd`/../../build-$TAG-$SYST/src/dales4
 

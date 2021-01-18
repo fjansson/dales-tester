@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -t 24:00:00
+#SBATCH -t 48:00:00
 #SBATCH -n 24  #total number of tasks, number of nodes calculated automatically 
 #SBATCH --constraint=haswell # Runs only on Haswell nodes (faster, AVX2)
 
@@ -10,7 +10,7 @@
 # #SBATCH --constraint=haswell # Runs only on Haswell nodes (faster, AVX2)
 
 
-# submit as array job  sbatch --array=1-5 --export=TAG=4.3-rc.1 cao.job
+# submit as array job  sbatch --array=1-5 --export=TAG=4.3-rc.1 cao-fftw.job
 # $SLURM_ARRAY_TASK_ID gives ID, which is used as random seed.
 ID=$SLURM_ARRAY_TASK_ID
 
