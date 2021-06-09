@@ -1,17 +1,22 @@
 #!/bin/sh
 #PJM -L "node=1"
 #PJM -L "rscunit=rscunit_ft01"
-#PJM -L "rscgrp=eap-small"
-#PJM -L "elapse=0:50:00"
+#PJM -L "rscgrp=small"
+#PJM -L "elapse=12:00:00"
 #PJM --mpi max-proc-per-node=48
+#PJM --llio cn-cache-size=1Gi # default = 128Mb
+#PJM --llio sio-read-cache=on
 #PJM -s
 
 # do not create empty stdout/stderr files
 export PLE_MPI_STD_EMPTYFILE=off
 
-. /vol0001/apps/oss/spack/share/spack/setup-env.sh
+# local spack
+# Trying to work around mixing of 1.2.29 and 1.2.31 environments
+. ~/spack/share/spack/setup-env.sh
 spack load netcdf-fortran%fj
-spack load fftw@3.3.8%fj /4jakmbv
+spack load fftw%fj +openmp
+
 
 
 # submit as bulk job for ensemble, to set different random seeds
@@ -35,30 +40,34 @@ then
     exit
 fi
 
-#if [ -z "$NX" ] 
-#then
-#    echo "Set variable NX to the number of tasks in x."
-#    exit
-#fi
+if [ -z "$NX" ]
+then
+    NX=6
+fi
 
-#if [ -z "$NY" ] 
-#then
-#    echo "Set variable NY to the number of tasks in y."
-#    exit
-#fi
+if [ -z "$NY" ]
+then
+    NY=8
+fi
 
-#NTOT=$(($NX*NY))
+NTOT=$(($NX*NY))
 
 OPT=fftw
 SYST=FX-Fujitsu
-NAMOPTIONS=namoptions-1728-fftw.001
+NAMOPTIONS=namoptions-144-fftw.001
 
-DALES=`pwd`/../../build-$TAG-$SYST/src/dales4
+WD=`pwd -P | sed 's/vol[0-9]*/&_cache/'`
+# get current directory, resolving symlinks. E.g. /vol0004/hp120279/u00892/runs/
+# use sed to edit volXXXX to volXXXX_cache
 
+DALES=$WD/../../build-$TAG-$SYST/src/dales4
+if [ ! -f $DALES ]
+then
+    DALES=$WD/../../build-$TAG-$SYST/src/dales4.3
+fi
 
-CASE=`pwd`
-WORK=$HOME/dales-tester-wrk/rico-$TAG-$SYST-$OPT/$ID
-
+CASE=$WD
+WORK=$WD/../../dales-tester-wrk/rico-$TAG-$SYST-$OPT/$ID
 mkdir -p $WORK
 
 cd $WORK
@@ -67,6 +76,8 @@ cp $CASE/{lscale.inp.001,$NAMOPTIONS,prof.inp.001,scalar.inp.001} ./
 # edit random seed in namoptions
 sed -i -r "s/irandom.*=.*/irandom = $ID/" $NAMOPTIONS
 
+# edit nprocx, nprocy in namelist
+sed -i -r "s/nprocx.*=.*/nprocx = $NX/;s/nprocy.*=.*/nprocy = $NY/" $NAMOPTIONS
 
 echo ID $ID
 echo SYST $SYST
@@ -74,10 +85,10 @@ echo DALES $DALES
 echo CASE $CASE
 echo WORK $WORK
 echo hostname `hostname`
-#echo SLURM_NTASKS $SLURM_NTASKS
+echo NTOT $NTOT
+echo NX,NY $NX,$NY
 
-NTOT=24
-mpiexec -n $NTOT $DALES $NAMOPTIONS | tee output.txt
+mpiexec -n $NTOT $DALES $NAMOPTIONS
 
 
 

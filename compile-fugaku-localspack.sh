@@ -12,7 +12,7 @@ TAG=$1
 # Trying to work around mixing of 1.2.29 and 1.2.31 environments
 . ~/spack/share/spack/setup-env.sh
 spack load netcdf-fortran%fj
-spack load fftw%fj
+spack load fftw%fj +openmp
 
 
 # workaround for library errors in git after loading spack
