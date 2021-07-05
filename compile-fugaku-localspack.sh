@@ -2,23 +2,18 @@
 
 TAG=$1
 
+# system-wide spack
+#. /vol0004/apps/oss/spack/share/spack/setup-env.sh
+# spack load netcdf-fortran%fj
+# spack load fj-fftw
+# spack load cmake@3.18.4%gcc
 
-# before directory shuffle end of 2020
-# obsolete 1. March 2021 when login nodes switching to RHEL 8
-#. /vol0001/apps/oss/spack/share/spack/setup-env.sh
-#spack load netcdf-fortran%fj
-#spack load fftw@3.3.8%fj /4jakmbv
-#spack load cmake@3.17.3 arch=linux-rhel7-haswell
-
-# switch to older language environment,
-# for Bus error reproduction test
-#module unload lang
-#module load lang/tcsds-1.2.29 
-
-. /vol0004/apps/oss/spack/share/spack/setup-env.sh
+# local spack
+# Trying to work around mixing of 1.2.29 and 1.2.31 environments
+. ~/spack/share/spack/setup-env.sh
 spack load netcdf-fortran%fj
-spack load fj-fftw
-spack load cmake@3.18.4%gcc
+spack load fftw%fj +openmp
+
 
 # workaround for library errors in git after loading spack
 # /usr/libexec/git-core/git-remote-https: symbol lookup error: /lib64/libk5crypto.so.3: undefined symbol: EVP_KDF_ctrl, version OPENSSL_1_1_1b
@@ -51,6 +46,7 @@ cmake ../dales -DUSE_FFTW=True
 # -DUSE_HYPRE=True
 # -DHYPRE_LIB=
 
-make -j 4
+make -j 4 2>&1 | tee compilation-log.txt
+
 
 
