@@ -37,6 +37,11 @@ module load Hypre/2.14.0-foss-2018b
 module load FFTW/3.3.8-gompi-2018b
 
 DALES=`pwd`/../../build-$TAG-$SYST/src/dales4
+if [ ! -x $DALES] ; then
+# look for dales4.3 if dales4 is not found
+# the binary was renamed in the 4.3 release
+DALES=${DALES}.3
+fi
 
 PROJECT=/projects/0/einf170/
 CASE=`pwd`

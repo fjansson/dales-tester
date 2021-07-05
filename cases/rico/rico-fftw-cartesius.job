@@ -10,7 +10,7 @@
 # #SBATCH --constraint=haswell # Runs only on Haswell nodes (faster, AVX2)
 
 
-# submit as array job  sbatch --array=1-5 --export=TAG=4.3-rc.1 rico-fftw.job
+# submit as array job  sbatch --array=1-5 --export=TAG=4.3-rc.1 rico-fftw-cartesius.job
 # $SLURM_ARRAY_TASK_ID gives ID, which is used as random seed.
 ID=$SLURM_ARRAY_TASK_ID
 
@@ -39,6 +39,13 @@ module load Hypre/2.14.0-foss-2018b
 module load FFTW/3.3.8-gompi-2018b
 
 DALES=`pwd`/../../build-$TAG-$SYST/src/dales4
+
+if [ ! -x $DALES ] ; then
+# look for dales4.3 if dales4 is not found
+# the binary was renamed in the 4.3 release
+DALES=${DALES}.3
+fi
+
 
 PROJECT=/projects/0/einf170/
 CASE=`pwd`
