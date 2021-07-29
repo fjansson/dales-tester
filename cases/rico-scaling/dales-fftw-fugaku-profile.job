@@ -4,18 +4,18 @@
 #PJM -L "rscgrp=small"
 #PJM -L "elapse=0:50:00"
 #PJM --mpi max-proc-per-node=48
-#PJM --llio cn-cache-size=1Gi # default = 128Mb
-#PJM --llio sio-read-cache=on
+#PJM --llio cn-cache-size=1Gi # default = 128Mb                                                            
+#PJM --llio sio-read-cache=on                  
 #PJM -s
 
-# other PJM flags
+# other PJM flags 
 #  --llio localtmp-size=500Mi
 
 
 # do not create empty stdout/stderr files
 export PLE_MPI_STD_EMPTYFILE=off
 
-# local spack
+# local spack                                                                                              
 . ~/spack/share/spack/setup-env.sh
 spack load netcdf-fortran%fj
 spack load fftw%fj +openmp
@@ -30,25 +30,25 @@ spack load fftw%fj +openmp
 # bulk job ID, used as random seed
 # ID=${PJM_BULKNUM}
 
-if [ -z "$ID" ]
+if [ -z "$ID" ] 
 then
     ID=1
 fi
 
 
-if [ -z "$TAG" ]
+if [ -z "$TAG" ] 
 then
     echo "Set variable TAG to the DALES version to run."
     exit
 fi
 
-if [ -z "$NX" ]
+if [ -z "$NX" ] 
 then
     echo "Set variable NX to the number of tasks in x."
     exit
 fi
 
-if [ -z "$NY" ]
+if [ -z "$NY" ] 
 then
     echo "Set variable NY to the number of tasks in y."
     exit
@@ -90,7 +90,7 @@ echo NTOT $NTOT
 echo NX,NY $NX,$NY
 
 # capture the stderr output from the time command in elaps
-elaps=$( { /usr/bin/time --format='%e' mpiexec -n $NTOT $DALES $NAMOPTIONS 2>&1 > mpiexec.out ; } 2>&1 )
+elaps=$( { /usr/bin/time --format='%e' fipp -m 128000 -C -d profiling_data -Icall,cpupa,mpi mpiexec -n $NTOT $DALES $NAMOPTIONS 2>&1 > mpiexec.out ; } 2>&1 )
 
 # { time sleep 1 2> sleep.stderr ; } 2> time.txt
 
@@ -99,3 +99,4 @@ elaps=$( { /usr/bin/time --format='%e' mpiexec -n $NTOT $DALES $NAMOPTIONS 2>&1 
 
 echo $TAG $OPT $SYST $NTOT $NX $NY ${elaps##* }
 # echo $TAG $OPT $SYST $NTOT $NX $NY $elaps >> $CASE/results.txt
+

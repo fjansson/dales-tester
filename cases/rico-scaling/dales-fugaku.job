@@ -22,9 +22,9 @@ spack load fftw%fj +openmp
 
 
 # submit as bulk job for ensemble, to set different random seeds
-# pjsub --bulk --sparam startbulkno-endbulkno -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fftw-fugaku.sh
+# pjsub --bulk --sparam startbulkno-endbulkno -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fugaku.sh
 
-# pjsub -x "TAG=c8cf1,NX=6,NY=8"  -L "node=1"  dales-fftw-fugaku.sh
+# pjsub -x "TAG=c8cf1,NX=6,NY=8"  -L "node=1"  dales-fugaku.sh
 
 
 # bulk job ID, used as random seed
@@ -56,9 +56,9 @@ fi
 
 NTOT=$(($NX*NY))
 
-OPT=fftw
+OPT=""
 SYST=FX-Fujitsu
-NAMOPTIONS=namoptions-1728-fftw.001
+NAMOPTIONS=namoptions-1728.001
 
 HOME_CACHE=`realpath $HOME | sed 's/vol[0-9]*/&_cache/'`
 

@@ -19,10 +19,10 @@ spack load fftw%fj +openmp
 
 
 # submit as bulk job for ensemble, to set different random seeds
-# pjsub --bulk --sparam startbulkno-endbulkno -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fftw-fugaku.job
-# pjsub --bulk --sparam 1-5 -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fftw-fugaku.job
+# pjsub --bulk --sparam startbulkno-endbulkno -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fugaku.job
+# pjsub --bulk --sparam 1-5 -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fugaku.job
 
-# pjsub -x "TAG=c8cf1,NX=6,NY=8"  -L "node=1"  dales-fftw-fugaku.job
+# pjsub -x "TAG=c8cf1,NX=6,NY=8"  -L "node=1"  dales-fugaku.job
 
 # bulk job ID, used as random seed
 ID=${PJM_BULKNUM}
@@ -51,9 +51,9 @@ fi
 
 NTOT=$(($NX*NY))
 
-OPT=fftw
+OPT=""
 SYST=FX-Fujitsu
-NAMOPTIONS=namoptions-144-fftw.001
+NAMOPTIONS=namoptions-144.001
 
 WD=`pwd -P | sed 's/vol[0-9]*/&_cache/'`
 # get current directory, resolving symlinks. E.g. /vol0004/hp120279/u00892/runs/
@@ -66,7 +66,7 @@ then
 fi
 
 CASE=$WD
-WORK=$WD/../../dales-tester-wrk/rico-$TAG-$SYST-$OPT/$ID
+WORK=$WD/../../../dales-tester-wrk/rico-$TAG-$SYST-$OPT/$ID
 mkdir -p $WORK
 
 cd $WORK
