@@ -98,4 +98,4 @@ elaps=$( { /usr/bin/time --format='%e' mpiexec -n $NTOT $DALES $NAMOPTIONS 2>&1 
 # fipppx -A -pall -d profiling_data/ > fipp-output.txt
 
 echo $TAG $OPT $SYST $NTOT $NX $NY ${elaps##* }
-# echo $TAG $OPT $SYST $NTOT $NX $NY $elaps >> $CASE/results.txt
+echo $TAG $OPT $SYST $NTOT $NX $NY ${elaps##* } >> $CASE/results.txt
