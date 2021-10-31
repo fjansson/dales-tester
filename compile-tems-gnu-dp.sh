@@ -33,9 +33,11 @@ module load fftw/3.3.9
 cd dales
 git fetch
 git checkout $TAG
+# replace modprecision.f90 with a double-precision version
+cp ../modprecision-dp.f90 src/modprecision.f90
 cd ..
-mkdir build-$TAG-$SYST
-cd build-$TAG-$SYST
+mkdir build-$TAG-dp-$SYST
+cd build-$TAG-dp-$SYST
 
 cmake ../dales -DUSE_FFTW=True \
       -DFFTWF_LIB=$FFTW_DIR/lib/libfftw3f.a \
@@ -43,4 +45,8 @@ cmake ../dales -DUSE_FFTW=True \
 
 make -j 4 | tee compilation-log.txt
 
+# restore modprecision.f90
+cd ..
+cd dales
+git checkout src/modprecision.f90
 
