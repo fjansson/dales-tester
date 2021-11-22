@@ -14,11 +14,17 @@
 
 # do not create empty stdout/stderr files
 export PLE_MPI_STD_EMPTYFILE=off
+# export UTOFU_SWAP_PROTECT=1
+
+# Sept 2021 - new system-wide spack
+. /vol0004/apps/oss/spack-v0.16.2/share/spack/setup-env.sh
+spack load netcdf-fortran%fj /bubmb4i
+spack load fftw%fj
 
 # local spack
-. ~/spack/share/spack/setup-env.sh
-spack load netcdf-fortran%fj
-spack load fftw%fj +openmp
+#. ~/spack/share/spack/setup-env.sh
+#spack load netcdf-fortran%fj
+#spack load fftw%fj +openmp
 
 
 # submit as bulk job for ensemble, to set different random seeds
@@ -60,19 +66,18 @@ OPT=fftw
 SYST=FX-Fujitsu
 NAMOPTIONS=namoptions-1728-fftw.001
 
-HOME_CACHE=`realpath $HOME | sed 's/vol[0-9]*/&_cache/'`
 
-DALES=$HOME_CACHE/dales-tester/build-$TAG-$SYST/src/dales4*
+DALES=$HOME/dales-tester/build-$TAG-$SYST/src/dales4*
 # dales4* to match either dales4 or dales4.3
 
-llio_transfer ${DALES}
-
 CASE=`pwd`
-WORK=$HOME_CACHE/dales-tester-wrk/rico-$TAG-$SYST-$OPT-$NX-$NY/$ID
+WORK=$HOME/dales-tester-wrk/rico-$TAG-$SYST-$OPT-$NX-$NY/$ID
 mkdir -p $WORK
 
 cd $WORK
 cp $CASE/{lscale.inp.001,$NAMOPTIONS,prof.inp.001,scalar.inp.001} ./
+
+llio_transfer ${DALES} ./{lscale.inp.001,$NAMOPTIONS,prof.inp.001,scalar.inp.001} 
 
 # edit random seed in namoptions
 sed -i -r "s/irandom.*=.*/irandom = $ID/" $NAMOPTIONS

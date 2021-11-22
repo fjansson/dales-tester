@@ -11,11 +11,16 @@
 # do not create empty stdout/stderr files
 export PLE_MPI_STD_EMPTYFILE=off
 
+. /vol0004/apps/oss/spack-v0.16.2/share/spack/setup-env.sh
+spack load netcdf-fortran%fj /bubmb4i
+spack load fftw%fj
+
+
 # local spack
 # Trying to work around mixing of 1.2.29 and 1.2.31 environments
-. ~/spack/share/spack/setup-env.sh
-spack load netcdf-fortran%fj
-spack load fftw%fj +openmp
+#. ~/spack/share/spack/setup-env.sh
+#spack load netcdf-fortran%fj
+#spack load fftw%fj +openmp
 
 
 # submit as bulk job for ensemble, to set different random seeds
@@ -55,9 +60,11 @@ OPT=fftw
 SYST=FX-Fujitsu
 NAMOPTIONS=namoptions-144-fftw.001
 
-WD=`pwd -P | sed 's/vol[0-9]*/&_cache/'`
+WD=`pwd`
+#WD=`pwd -P | sed 's/vol[0-9]*/&_cache/'`
 # get current directory, resolving symlinks. E.g. /vol0004/hp120279/u00892/runs/
 # use sed to edit volXXXX to volXXXX_cache
+# -- not anymore
 
 DALES=$WD/../../build-$TAG-$SYST/src/dales4
 if [ ! -f $DALES ]

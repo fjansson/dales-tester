@@ -11,11 +11,15 @@
 # do not create empty stdout/stderr files
 export PLE_MPI_STD_EMPTYFILE=off
 
+. /vol0004/apps/oss/spack-v0.16.2/share/spack/setup-env.sh
+spack load netcdf-fortran%fj /bubmb4i
+spack load fftw%fj
+
 # local spack
 # Trying to work around mixing of 1.2.29 and 1.2.31 environments
-. ~/spack/share/spack/setup-env.sh
-spack load netcdf-fortran%fj
-spack load fftw%fj +openmp
+#. ~/spack/share/spack/setup-env.sh
+#spack load netcdf-fortran%fj
+#spack load fftw%fj +openmp
 
 
 # submit as bulk job for ensemble, to set different random seeds
