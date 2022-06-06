@@ -4,7 +4,7 @@ TAG=$1
 
 # December 2021 update. frtpx (FRT) 4.7.0 20211110
 . /vol0004/apps/oss/spack-v0.17.0/share/spack/setup-env.sh
-spack load netcdf-fortran%fj
+spack load netcdf-fortran%fj/ayace7t
 spack load fftw%fj  
 
 # system-wide spack - after Sept 2021 update, environment version '4.6.1 tcsds-1.2.33'

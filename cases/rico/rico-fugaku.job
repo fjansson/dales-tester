@@ -10,10 +10,17 @@
 
 # do not create empty stdout/stderr files
 export PLE_MPI_STD_EMPTYFILE=off
+# prevent Tofu communication buffer from being swapped out of memory:
+export UTOFU_SWAP_PROTECT=1
 
-. /vol0004/apps/oss/spack-v0.16.2/share/spack/setup-env.sh
-spack load netcdf-fortran%fj /bubmb4i
+# December 2021 update. frtpx (FRT) 4.7.0 20211110
+. /vol0004/apps/oss/spack-v0.17.0/share/spack/setup-env.sh
+spack load netcdf-fortran%fj
 spack load fftw%fj
+
+#. /vol0004/apps/oss/spack-v0.16.2/share/spack/setup-env.sh
+#spack load netcdf-fortran%fj /bubmb4i
+#spack load fftw%fj
 
 # local spack
 # Trying to work around mixing of 1.2.29 and 1.2.31 environments
@@ -59,9 +66,10 @@ OPT=""
 SYST=FX-Fujitsu
 NAMOPTIONS=namoptions-144.001
 
-WD=`pwd -P | sed 's/vol[0-9]*/&_cache/'`
+#WD=`pwd -P | sed 's/vol[0-9]*/&_cache/'`
+WD=`pwd`
 # get current directory, resolving symlinks. E.g. /vol0004/hp120279/u00892/runs/
-# use sed to edit volXXXX to volXXXX_cache
+# use sed to edit volXXXX to volXXXX_cache - not anymore after dec 2021
 
 DALES=$WD/../../build-$TAG-$SYST/src/dales4
 if [ ! -f $DALES ]

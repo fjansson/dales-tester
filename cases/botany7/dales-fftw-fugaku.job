@@ -1,0 +1,131 @@
+#!/bin/sh
+#PJM -L "node=1"
+#PJM -L "rscunit=rscunit_ft01"
+#PJM -L "rscgrp=small"
+#PJM -L "elapse=6:00:00"
+#PJM --mpi max-proc-per-node=48
+#PJM --llio cn-cache-size=1Gi # default = 128Mb
+#PJM -x PJM_LLIO_GFSCACHE=/vol0004    
+#PJM --llio sio-read-cache=on
+#PJM -s
+
+# other PJM flags
+#  --llio localtmp-size=500Mi
+
+
+# do not create empty stdout/stderr files
+export PLE_MPI_STD_EMPTYFILE=off
+
+# prevent Tofu communication buffer from being swapped out of memory:
+export UTOFU_SWAP_PROTECT=1
+
+# December 2021 update. frtpx (FRT) 4.7.0 20211110
+. /vol0004/apps/oss/spack-v0.17.0/share/spack/setup-env.sh
+spack load netcdf-fortran%fj/ayace7t
+spack load fftw%fj
+
+
+# submit as bulk job for ensemble, to set different random seeds
+# pjsub --bulk --sparam startbulkno-endbulkno -x "TAG=c8cf1,NX=6,NY=8"  -L  "node=1"  dales-fftw-fugaku.sh
+
+# pjsub -x "TAG=ca69c,NX=24,NY=48"  -L "node=24"  dales-fftw-fugaku.job
+
+# pjsub -x "TAG=ca69c,NX=24,NY=48,PARALLEL=$PARALLEL" --mpi max-proc-per-node=$PPN -L "node=24"  dales-fftw-fugaku.job
+
+
+
+       
+        
+
+
+# bulk job ID, used as random seed
+# ID=${PJM_BULKNUM}
+
+DATA=/home/hp200321/data
+
+if [ -z "$ID" ]
+then
+    ID=1
+fi
+
+
+if [ -z "$TAG" ]
+then
+    #echo "Set variable TAG to the DALES version to run."
+    #exit
+    TAG=ca69c
+fi
+
+if [ -z "$NX" ]
+then
+    echo "Set variable NX to the number of tasks in x."
+    exit
+fi
+
+if [ -z "$NY" ]
+then
+    echo "Set variable NY to the number of tasks in y."
+    exit
+fi
+
+
+NTOT=$(($NX*NY))
+
+OPT=fftw
+SYST=FX-Fujitsu
+NAMOPTIONS=namoptions-1536.001
+
+DALES=/home/hp200321/data/fredrik/dales-tester/build-$TAG-$SYST/src/dales4*
+# dales4* to match either dales4 or dales4.3
+
+llio_transfer ${DALES}
+
+
+CASE=`pwd`
+if [ -z "$PARALLEL" ]
+then
+WORK=$DATA/fredrik/dales-tester-wrk/botany7-$TAG-$SYST-$OPT-$NX-$NY/$ID
+else
+WORK=$DATA/fredrik/dales-tester-wrk/botany7-$TAG-$SYST-$OPT-$NX-$NY-$PARALLEL/$ID
+export OMP_NUM_THREADS=${PARALLEL}
+fi
+    
+
+mkdir -p $WORK
+
+cd $WORK
+cp $CASE/{lscale.inp.001,$NAMOPTIONS,prof.inp.001,scalar.inp.001,nudge.inp.001,rrtmg*nc,backrad*} ./
+
+#create run directories
+for i in `seq -f "%03.0f" 0 $((NY - 1))`; do mkdir $i; done
+
+
+# edit random seed in namoptions
+sed -i -r "s/irandom.*=.*/irandom = $ID/" $NAMOPTIONS
+
+# edit nprocx, nprocy in namelist
+sed -i -r "s/nprocx.*=.*/nprocx = $NX/;s/nprocy.*=.*/nprocy = $NY/" $NAMOPTIONS
+
+echo ID $ID
+echo SYST $SYST
+echo DALES $DALES
+echo CASE $CASE
+echo WORK $WORK
+echo hostname `hostname`
+echo NTOT $NTOT
+echo NX,NY $NX,$NY
+
+# wait to let various IO complete, for less noisy benchmark
+# recommended in the Fugaku instructions
+sleep 300
+
+# capture the stderr output from the time command in elaps
+elaps=$( { /usr/bin/time --format='%e' mpiexec -n $NTOT $DALES $NAMOPTIONS 2>&1 > mpiexec.out ; } 2>&1 )
+
+# { time sleep 1 2> sleep.stderr ; } 2> time.txt
+
+
+# fipppx -A -pall -d profiling_data/ > fipp-output.txt
+
+echo $TAG $OPT $SYST $NTOT $NX $NY $PARALLEL ${elaps##* }
+echo $TAG $OPT $SYST $NTOT $NX $NY $PARALLEL ${elaps##* } >> $CASE/results.txt
