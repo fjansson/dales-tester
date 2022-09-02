@@ -1,0 +1,65 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=24
+#SBATCH --partition=thin
+#SBATCH --time=18:00:00
+
+# uses 24 cores like was done on Cartesius
+# parallelization is 3x8
+# allocates a quarter-node on Snellius = 32 cores
+
+# submit as array job  sbatch --array=1-5 --export=TAG=4.3 rico-snellius.job
+# $SLURM_ARRAY_TASK_ID gives ID, which is used as random seed.
+ID=$SLURM_ARRAY_TASK_ID
+
+#TAG=4.3
+#TAG=4.2.1
+#TAG=4.1
+
+if [ -z "$TAG" ] 
+then
+      echo "Set variable $TAG to the DALES version to run."
+      exit
+fi
+
+SYST=gnu-fast
+
+NAMOPTIONS=namoptions-144-fftw.001
+
+module load 2021
+module load foss/2021a
+module load netCDF-Fortran/4.5.3-gompi-2021a
+module load CMake/3.20.1-GCCcore-10.3.0
+module load Hypre/2.21.0-foss-2021a # optional
+
+
+DALES=`pwd`/../../build-$TAG-$SYST/src/dales4
+if [ ! -x $DALES ] ; then
+# look for dales4.3 if dales4 is not found
+# the binary was renamed in the 4.3 release
+DALES=${DALES}.3
+fi
+
+
+CASE=`pwd`
+OPT="fftw"
+WORK=/scratch-shared/$USER/dales-tester/rico-$TAG-$SYST-$OPT/$ID
+
+mkdir -p $WORK
+cd $WORK
+cp $CASE/{lscale.inp.001,$NAMOPTIONS,prof.inp.001,scalar.inp.001} ./
+
+
+# edit random seed in namoptions
+sed -i -r "s/irandom.*=.*/irandom = $ID/" $NAMOPTIONS
+
+echo ID $ID
+echo SYST $SYST
+echo DALES $DALES
+echo CASE $CASE
+echo WORK $WORK
+echo hostname `hostname`
+
+# /usr/bin/time -f"%e" 
+srun $DALES $NAMOPTIONS | tee output.txt
+
