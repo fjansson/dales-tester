@@ -4,12 +4,19 @@ TAG=$1
 
 export SYST=gnu-fast
 
-module load 2021
-module load foss/2021a
-# module load FFTW/3.3.9-gompi-2021a # included in foss
-module load netCDF-Fortran/4.5.3-gompi-2021a
-module load CMake/3.20.1-GCCcore-10.3.0
-module load Hypre/2.21.0-foss-2021a # optional
+module load 2022
+module load foss/2022a
+module load netCDF-Fortran/4.6.0-gompi-2022a
+module load CMake/3.23.1-GCCcore-11.3.0
+module load Hypre/2.25.0-foss-2022a # optional
+
+# 2021 module set
+#module load 2021
+#module load foss/2021a
+## module load FFTW/3.3.9-gompi-2021a # included in foss
+#module load netCDF-Fortran/4.5.3-gompi-2021a
+#module load CMake/3.20.1-GCCcore-10.3.0
+#module load Hypre/2.21.0-foss-2021a # optional
 
 
 # version 4.2.1 and below don't find netcdf on Cartesius
