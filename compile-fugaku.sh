@@ -2,26 +2,12 @@
 
 TAG=$1
 
-# December 2021 update. frtpx (FRT) 4.7.0 20211110
-. /vol0004/apps/oss/spack-v0.17.0/share/spack/setup-env.sh
-spack load netcdf-fortran%fj/ayace7t
-spack load fftw%fj  
+# 2024 April
+. /vol0004/apps/oss/spack/share/spack/setup-env.sh
+spack load netcdf-fortran@4.6.0%fj/mmdtg52
+spack load fftw%fj
+spack load cmake@3.24.3%gcc/wyds2me  # load cmake to avoid the fj cmake loaded by spack
 
-# system-wide spack - after Sept 2021 update, environment version '4.6.1 tcsds-1.2.33'
-# note uses spack-v0.16.2 
-# . /vol0004/apps/oss/spack-v0.16.2/share/spack/setup-env.sh
-# spack load netcdf-fortran%fj /bubmb4i
-# spack load fftw%fj
-
-# local spack - used before Sept 2021
-# Trying to work around mixing of 1.2.29 and 1.2.31 environments
-# . ~/spack/share/spack/setup-env.sh
-# spack load netcdf-fortran%fj
-# spack load fftw%fj +openmp
-
-
-# workaround for library errors in git after loading spack
-# /usr/libexec/git-core/git-remote-https: symbol lookup error: /lib64/libk5crypto.so.3: undefined symbol: EVP_KDF_ctrl, version OPENSSL_1_1_1b
 # export LD_LIBRARY_PATH=/lib64:$LD_LIBRARY_PATH
 
 # DALES 4.3-rc.2 and earlier don't work on Fugaku.
@@ -34,8 +20,7 @@ spack load fftw%fj
 
 
 export SYST=FX-Fujitsu
-export LDFLAGS="-lhdf5_hl -lhdf5"
-
+export LDFLAGS="-lhdf5_hl -lhdf5" # for netcdf to find hdf5 libraries
 
 cd dales
 git fetch
@@ -52,6 +37,3 @@ cmake ../dales -DUSE_FFTW=True
 # -DHYPRE_LIB=
 
 make -j 4 2>&1 | tee compilation-log.txt
-
-
-
