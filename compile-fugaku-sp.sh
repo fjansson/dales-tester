@@ -3,37 +3,24 @@
 TAG=$1
 
 # 2024 April
-. /vol0004/apps/oss/spack/share/spack/setup-env.sh
-spack load netcdf-fortran@4.6.0%fj/mmdtg52
-spack load fftw%fj
-spack load cmake@3.24.3%gcc/wyds2me  # load cmake to avoid the fj cmake loaded by spack
+# spack v0.21 and the matching tcsds-1.2.38 compiler
+module unload lang
+module load lang/tcsds-1.2.38
+. /vol0004/apps/oss/spack-v0.21/share/spack/setup-env.sh
+spack load netcdf-fortran@4.6.1%fj
+spack load fftw%fj/tvu5j7p
+spack load cmake@3.27.7%gcc@13.2.0/ylpx52y
 
-# export LD_LIBRARY_PATH=/lib64:$LD_LIBRARY_PATH
-
-# DALES 4.3-rc.2 and earlier don't work on Fugaku.
-# Support added in branches fugaku and to4.4_Fredrik
-#
-# Uses -DUSE_HYPRE=True and -DUSE_FFTW=True
-# versions before 4.3 do not support these, and will ignore them
-
-# Versions before 4.2 do not recognize SYST=gnu-fast
-
-
-export SYST=FX-Fujitsu
 export LDFLAGS="-lhdf5_hl -lhdf5"
+export DIR=build-$TAG-mix
 
 cd dales
 git fetch
 git checkout $TAG
 cd ..
-mkdir build-$TAG-sp-$SYST
-cd build-$TAG-sp-$SYST
+mkdir $DIR
+cd $DIR
 
-cmake ../dales -DFIELD_PRECISION=32 -DPOIS_PRECISION=32 -DUSE_FFTW=True
-
-# other flags:
-# -DFFTW_LIB=      not needed, found automatically
-# -DUSE_HYPRE=True
-# -DHYPRE_LIB=
+FC=mpifrtpx CC=mpifccpx cmake ../dales -DENABLE_FP32_FIELDS=ON -DENABLE_FP32_POIS=ON 
 
 make -j 4 2>&1 | tee compilation-log.txt

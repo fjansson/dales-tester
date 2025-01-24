@@ -12,7 +12,7 @@ spack load fftw%fj/tvu5j7p
 spack load cmake@3.27.7%gcc@13.2.0/ylpx52y
 
 export LDFLAGS="-lhdf5_hl -lhdf5"
-export DIR=build-$TAG
+export DIR=build-$TAG-mix
 
 cd dales
 git fetch
@@ -21,6 +21,6 @@ cd ..
 mkdir $DIR
 cd $DIR
 
-FC=mpifrtpx CC=mpifccpx cmake ../dales
+FC=mpifrtpx CC=mpifccpx cmake ../dales -DENABLE_FP32_FIELDS=ON 
 
 make -j 4 2>&1 | tee compilation-log.txt
