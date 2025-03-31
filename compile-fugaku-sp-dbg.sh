@@ -12,7 +12,7 @@ spack load fftw%fj/tvu5j7p
 spack load cmake@3.27.7%gcc@13.2.0/ylpx52y
 
 export LDFLAGS="-lhdf5_hl -lhdf5"
-export DIR=build-$TAG-mix-dbg
+export DIR=build-$TAG-sp-dbg
 
 cd dales
 git fetch
