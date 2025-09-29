@@ -28,7 +28,8 @@ cd ..
 mkdir $BUILD
 cd $BUILD
 
-cmake ../dales -DUSE_HYPRE=True -DUSE_FFTW=True -DCMAKE_BUILD_TYPE=Debug
+#cmake ../dales -DUSE_HYPRE=True -DUSE_FFTW=True -DCMAKE_BUILD_TYPE=Debug
+cmake ../dales -DCMAKE_BUILD_TYPE=Debug
 
 make -j 4
 

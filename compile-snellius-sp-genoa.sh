@@ -28,8 +28,9 @@ cd ..
 mkdir $BUILD
 cd $BUILD
 
-cmake ../dales -DUSE_HYPRE=True -DUSE_FFTW=True -DFIELD_PRECISION=32 -DPOIS_PRECISION=32
+#cmake ../dales -DUSE_HYPRE=True -DUSE_FFTW=True -DFIELD_PRECISION=32 -DPOIS_PRECISION=32
+cmake ../dales -DENABLE_FP32_FIELDS=ON -DENABLE_FP32_POIS=ON
 
-make -j 4
+make -j 8
 
 

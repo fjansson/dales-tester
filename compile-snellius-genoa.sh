@@ -28,7 +28,8 @@ cd ..
 mkdir $BUILD
 cd $BUILD
 
-cmake ../dales -DUSE_HYPRE=True -DUSE_FFTW=True 
+# cmake ../dales -DUSE_HYPRE=True -DUSE_FFTW=True
+cmake ../dales 
 
 make -j 4
 
