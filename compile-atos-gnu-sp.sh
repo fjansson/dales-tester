@@ -21,7 +21,7 @@ module load cmake/4.0.2
 #module load netcdf4/4.9.3:gnu:14.2
 #module load cmake/4.0.2
 
-BUILD=build-$TAG-gnu
+BUILD=build-$TAG-gnu-sp
 
 # set FC, otherwise cmake picks system's f95
 export FC=mpif90
@@ -33,7 +33,7 @@ cd ..
 mkdir $BUILD
 cd $BUILD
 
-cmake ../dales
+cmake ../dales -DENABLE_FP32_FIELDS=ON -DENABLE_FP32_POIS=ON
 
 make -j 8
 

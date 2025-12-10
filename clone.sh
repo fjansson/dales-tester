@@ -2,6 +2,7 @@
 
 git clone https://github.com/dalesteam/dales
 cd dales 
+git checkout dev
 git submodule init
 git submodule update
 
