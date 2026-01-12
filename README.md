@@ -35,3 +35,14 @@ where case_dir consists of case-$TAG-$SYST.
 $TAG is a git version tag or commit, and $SYST is the system selection
 which controls the compiler settings for DALES.
 
+GPU compilation on Snellius
+---------------------------
+
+```
+module load 2025
+module load eb/5.1.2
+eblocalinstall --skip-test-step netCDF-4.9.3-nvompi-2025.10.eb
+eblocalinstall --skip-test-step netCDF-Fortran-4.6.2-nvompi-2025.10.eb
+```
+
+note: eb/5.2.0 does not work with the netcdf*.eb files here.
