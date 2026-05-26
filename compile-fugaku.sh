@@ -2,6 +2,11 @@
 
 TAG=$1
 
+# 2026
+
+. /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+spack load netcdf-fortran@4.6.1%fj
+
 # 2024 April
 # spack v0.21 and the matching tcsds-1.2.38 compiler
 module unload lang
